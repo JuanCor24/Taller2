@@ -85,7 +85,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerC
         mMap.setOnMarkerClickListener (this)
         getCurrentLocationUser()
     }
-
+//klskdladk
     private fun getCurrentLocationUser() {
         if (ActivityCompat.checkSelfPermission(
                 this,
