@@ -29,8 +29,14 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), SensorEventListener{
 
+
+    private lateinit var gMap: GoogleMap
+    val sydney = LatLng(-34.0, 151.0)
+    private lateinit var dogMarker: Marker
+    var zoomLevel = 15.0f
+    var moveCamera = true
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -74,6 +80,23 @@ class MapsFragment : Fragment() {
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
+
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (this::gMap.isInitialized) {
+            if (event!!.values[0] > 100) {
+                gMap.setMapStyle(
+                    context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_day) })
+            } else {
+                gMap.setMapStyle(
+                    context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_night) })
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        //Do nothing
+    }
 /**
     fun moveDog(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
@@ -93,21 +116,9 @@ class MapsFragment : Fragment() {
 
 
 
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (this::gMap.isInitialized) {
-            if (event!!.values[0] > 100) {
-                gMap.setMapStyle(
-                    context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_day) })
-            } else {
-                gMap.setMapStyle(
-                    context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_night) })
-            }
-        }
-    }
 
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-        //Do nothing
-    }
+
+
 
     override fun onResume() {
         super.onResume()
