@@ -106,10 +106,6 @@ class MapsFragment : Fragment(), SensorEventListener{
         )
     }
 
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-        //Do nothing
-    }
-/**
     fun moveDog(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
         dogMarker.position = latLng
@@ -119,12 +115,12 @@ class MapsFragment : Fragment(), SensorEventListener{
         }
     }
 
-    private fun addPoint(latLng: LatLng) {
-        gMap.addMarker(
-            MarkerOptions().position(latLng).title("Ugh!").icon(
-                context?.let { bitmapDescriptorFromVector(it, R.drawable.golf) })
-        )
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+        //Do nothing
     }
+
+
+
 
 
 
@@ -134,12 +130,12 @@ class MapsFragment : Fragment(), SensorEventListener{
 
     override fun onResume() {
         super.onResume()
-        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
+
     }
 
     override fun onPause() {
         super.onPause()
-        sensorManager.unregisterListener(this)
+
     }
-    **/
+
 }

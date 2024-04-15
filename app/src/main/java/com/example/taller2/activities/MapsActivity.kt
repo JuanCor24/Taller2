@@ -46,20 +46,23 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class MapsActivity : AppCompatActivity(){
     private lateinit var binding: ActivityMapaBinding
-    var TAG = MainActivity::class.java.name
+    var TAG = MapsActivity::class.java.name
+
     private lateinit var mMap: GoogleMap
     private var alerts: Alerts = Alerts(this)
     private lateinit var geocoderSearch: GeocoderSearch
     private val PERM_LOCATION_CODE = 101
     private lateinit var currentLocation: Location
     private lateinit var fragment: MapsFragment
+
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private lateinit var searchView:SearchView;
-    companion object{
-        private const val  LOCATION_REQUEST_CODE = 1
-    }
+
+
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +95,7 @@ class MapsActivity : AppCompatActivity(){
             }
         }
 
-         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapsFragment
+         fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapsFragment
 
         geocoderSearch = GeocoderSearch(this)
 
@@ -117,10 +120,9 @@ class MapsActivity : AppCompatActivity(){
                 else -> false
             }
         }
+
     }
 
-
-//klskdladk
 private fun setupLocation() {
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).apply {
@@ -133,7 +135,8 @@ private fun setupLocation() {
             locationResult.locations.forEach { location ->
                 Log.i(TAG, "onLocationResult: $location") // Aquí se muestra en el log la ubicación actual
                 // Aquí puedes realizar cualquier acción con la ubicación actual
-                currentLocation = location  // Aquí se actualiza la posición actual
+                fragment.moveDog(location)
+                currentLocation = location
             }
         }
     }
