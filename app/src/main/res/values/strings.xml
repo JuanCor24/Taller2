@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Camara</string>
+    <string name="snackbar_dismiss_label">Cerrar</string>
+    <string name="camara_button_name">Camara</string>
+    <string name="gallery_button_name">Galeria</string>
+    <string name="paises_button_name">Mapa</string>
+    <string name="video_switch_label">Video</string>
+    <string name="take">Tomar</string>
+    <string name="pick_from_gallery">Escoger de Galeria</string>
+    <string name="label_search">Buscar Lugar</string>
+    <string name="map">Mover el mapa con la posicion del usuario?</string>
+</resources>

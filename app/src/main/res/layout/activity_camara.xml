@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    tools:context=".activities.CamaraActivity">
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/isPhotoOrVideoSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:textSize="20sp"
+        app:thumbIcon="@drawable/baseline_camera_roll_24"
+        android:text="@string/video_switch_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/preview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_horizontal"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCamera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isPhotoOrVideoSwitch" />
+
+    <Button
+        android:id="@+id/buttonCamera"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:text="@string/take"
+        app:icon="@drawable/baseline_camera_alt_24"
+        app:iconGravity="textStart"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:id="@+id/buttonGalery"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_from_gallery"
+        app:icon="@drawable/baseline_image_24"
+        app:iconGravity="textStart"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
