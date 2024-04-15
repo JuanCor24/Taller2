@@ -44,7 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerClickListener{
+class MapsActivity : AppCompatActivity(){
     private lateinit var binding: ActivityMapaBinding
     var TAG = MainActivity::class.java.name
     private lateinit var mMap: GoogleMap
@@ -68,58 +68,114 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerC
         binding = ActivityMapaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        setupLocation()
+        when {
+            ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                startLocationUpdates()
+            }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                alerts.indefiniteSnackbar(
+                    binding.root,
+                    "El permiso de Localizacion es necesario para usar esta actividad 😭"
+                )
 
+            }
 
-    }
-
-
-
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.setOnMarkerClickListener (this)
-        getCurrentLocationUser()
-    }
-//klskdladk
-    private fun getCurrentLocationUser() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) !=
-            PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_REQUEST_CODE)
-            return
-        }
-        mMap.uiSettings.isZoomControlsEnabled = true
-
-
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) {
-                location ->
-            if(location != null){
-                currentLocation = location
-                val LatLong = LatLng(location.latitude,location.longitude)
-                placeMarkeOnMap(LatLong)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLong,12f))
+            else -> {
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    PERM_LOCATION_CODE
+                )
             }
         }
 
+         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapsFragment
+
+        geocoderSearch = GeocoderSearch(this)
+
+
+        binding.searchView.editText?.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    val text = binding.searchView.editText?.text.toString()
+                    val address: MutableList<Address> = geocoderSearch.finPlacesByNameInRadius(
+                        text,
+                        LatLng(currentLocation.latitude, currentLocation.longitude)
+                    )!!
+                    address.forEach() {
+                        var title = text
+                        var desc =
+                            if (it.getAddressLine(0).isNullOrEmpty()) it.getAddressLine(0) else ""
+
+                    }
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
-    private fun placeMarkeOnMap(latLong: LatLng) {
-        val markerOptions = MarkerOptions().position(latLong)
-        markerOptions.title("$latLong")
-        mMap.addMarker(MarkerOptions())
+
+//klskdladk
+private fun setupLocation() {
+    fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).apply {
+        setMinUpdateDistanceMeters(5F)
+        setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+        setWaitForAccurateLocation(true)
+    }.build()
+    locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            locationResult.locations.forEach { location ->
+                Log.i(TAG, "onLocationResult: $location") // Aquí se muestra en el log la ubicación actual
+                // Aquí puedes realizar cualquier acción con la ubicación actual
+                currentLocation = location  // Aquí se actualiza la posición actual
+            }
+        }
+    }
+}
+
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERM_LOCATION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startLocationUpdates()
+                } else {
+                    alerts.shortSimpleSnackbar(
+                        binding.root,
+                        "Me acaban de negar los permisos de Localizacion 😭"
+                    )
+
+                }
+            }
+        }
     }
 
 
 
 
+    private fun startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest, locationCallback, Looper.getMainLooper()
+            )
 
-    override fun onMarkerClick(p0: Marker) = false
+        }
+    }
+
+
+
 }

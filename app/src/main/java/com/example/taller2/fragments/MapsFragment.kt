@@ -47,13 +47,19 @@ class MapsFragment : Fragment(), SensorEventListener{
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10f))
-        googleMap.uiSettings.isZoomControlsEnabled = true
-        googleMap.uiSettings.isCompassEnabled = true
-        googleMap.uiSettings.isMapToolbarEnabled = true
+        gMap = googleMap
+        gMap.uiSettings.isZoomControlsEnabled = false
+        gMap.uiSettings.isCompassEnabled = true
+        gMap.setMapStyle(
+            context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_day) })
+
+        dogMarker = gMap.addMarker(
+            MarkerOptions().position(sydney).title("Hey Dog!")
+                .icon(context?.let { bitmapDescriptorFromVector(it, R.drawable.doushouqi_dog) })
+        )!!
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        gMap.setOnMapLongClickListener { latLng -> addPoint(latLng) }
     }
 
     override fun onCreateView(
@@ -92,6 +98,12 @@ class MapsFragment : Fragment(), SensorEventListener{
                     context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_night) })
             }
         }
+    }
+    private fun addPoint(latLng: LatLng) {
+        gMap.addMarker(
+            MarkerOptions().position(latLng).title("Ugh!").icon(
+                context?.let { bitmapDescriptorFromVector(it, R.drawable.golf) })
+        )
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
