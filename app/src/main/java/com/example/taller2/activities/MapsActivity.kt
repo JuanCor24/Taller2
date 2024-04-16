@@ -48,12 +48,13 @@ class MapsActivity : AppCompatActivity(){
     private lateinit var binding: ActivityMapaBinding
     var TAG = MapsActivity::class.java.name
 
-    private lateinit var mMap: GoogleMap
+
     private var alerts: Alerts = Alerts(this)
     private lateinit var geocoderSearch: GeocoderSearch
     private val PERM_LOCATION_CODE = 101
     private lateinit var currentLocation: Location
     private lateinit var fragment: MapsFragment
+
 
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -93,13 +94,16 @@ class MapsActivity : AppCompatActivity(){
                     PERM_LOCATION_CODE
                 )
             }
+
         }
+
+
 
          fragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as MapsFragment
 
+
+
         geocoderSearch = GeocoderSearch(this)
-
-
         binding.searchView.editText?.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
@@ -121,6 +125,10 @@ class MapsActivity : AppCompatActivity(){
             }
         }
 
+
+        binding.switchFollowDog.setOnCheckedChangeListener { _, isChecked ->
+            fragment.moveCamera = isChecked
+        }
     }
 
 private fun setupLocation() {

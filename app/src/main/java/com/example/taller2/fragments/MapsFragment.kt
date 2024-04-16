@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
 import androidx.fragment.app.Fragment
+import android.widget.Toast
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 
 class MapsFragment : Fragment(), SensorEventListener{
 
@@ -36,6 +38,7 @@ class MapsFragment : Fragment(), SensorEventListener{
     val sydney = LatLng(-34.0, 151.0)
     private lateinit var dogMarker: Marker
     var zoomLevel = 15.0f
+    private val rutaCoordinates = mutableListOf<LatLng>()
     var moveCamera = true
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -50,6 +53,9 @@ class MapsFragment : Fragment(), SensorEventListener{
         gMap = googleMap
         gMap.uiSettings.isZoomControlsEnabled = false
         gMap.uiSettings.isCompassEnabled = true
+
+
+
         gMap.setMapStyle(
             context?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_day) })
 
@@ -60,6 +66,8 @@ class MapsFragment : Fragment(), SensorEventListener{
         gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
         gMap.setOnMapLongClickListener { latLng -> addPoint(latLng) }
+
+
     }
 
     override fun onCreateView(
@@ -101,10 +109,14 @@ class MapsFragment : Fragment(), SensorEventListener{
     }
     private fun addPoint(latLng: LatLng) {
         gMap.addMarker(
-            MarkerOptions().position(latLng).title("Ugh!").icon(
+            MarkerOptions().position(latLng).title("Estuve aqui").icon(
                 context?.let { bitmapDescriptorFromVector(it, R.drawable.golf) })
         )
     }
+
+
+
+
 
     fun moveDog(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
@@ -113,6 +125,19 @@ class MapsFragment : Fragment(), SensorEventListener{
         if(moveCamera) {
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel))
         }
+
+        rutaCoordinates.add(latLng)
+        val polylineOptions = PolylineOptions().apply {
+            color(ContextCompat.getColor(requireContext(), R.color.md_theme_light_scrim))
+            width(10f)
+            addAll(rutaCoordinates)
+        }
+        gMap.addPolyline(polylineOptions)
+
+
+
+        val message = "La posición se ha actualizado: Latitud ${location.latitude}, Longitud ${location.longitude}"
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
@@ -123,7 +148,9 @@ class MapsFragment : Fragment(), SensorEventListener{
 
 
 
-
+    fun getRutaCoordinates(): List<LatLng> {
+        return rutaCoordinates.toList()
+    }
 
 
 
@@ -137,5 +164,4 @@ class MapsFragment : Fragment(), SensorEventListener{
         super.onPause()
 
     }
-
 }
