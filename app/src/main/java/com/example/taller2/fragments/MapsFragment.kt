@@ -114,9 +114,12 @@ class MapsFragment : Fragment(), SensorEventListener{
         )
     }
 
-
-
-
+    fun addStore(location: LatLng, title: String, desc: String) {
+        gMap.addMarker(
+            MarkerOptions().position(location).title(title).snippet(desc).icon(
+                context?.let { bitmapDescriptorFromVector(it, R.drawable.baseline_add_business_24) })
+        )
+    }
 
     fun moveDog(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
@@ -145,14 +148,9 @@ class MapsFragment : Fragment(), SensorEventListener{
     }
 
 
-
-
-
     fun getRutaCoordinates(): List<LatLng> {
         return rutaCoordinates.toList()
     }
-
-
 
 
     override fun onResume() {

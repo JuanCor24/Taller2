@@ -116,7 +116,7 @@ class MapsActivity : AppCompatActivity(){
                         var title = text
                         var desc =
                             if (it.getAddressLine(0).isNullOrEmpty()) it.getAddressLine(0) else ""
-
+                        fragment.addStore(LatLng(it.latitude, it.longitude), title, desc)
                     }
                     true
                 }

@@ -1,6 +1,8 @@
 
 <resources>
     <color name="seed">#00696e</color>
+    <color name="blue_card"> #41a5f5 </color>
+    <color name="green_card"> #64b969 </color>
     <color name="md_theme_light_primary">#00696E</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>
     <color name="md_theme_light_primaryContainer">#6FF6FE</color>
