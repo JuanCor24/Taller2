@@ -114,9 +114,12 @@ class MapsActivity : AppCompatActivity(){
                     )!!
                     address.forEach() {
                         var title = text
-                        var desc =
-                            if (it.getAddressLine(0).isNullOrEmpty()) it.getAddressLine(0) else ""
-                        fragment.addStore(LatLng(it.latitude, it.longitude), title, desc)
+                        var desc = it.getAddressLine(0) ?: ""
+                        Log.d("Address Description", "Description: $desc")
+
+                        fragment.addStore(this, LatLng(it.latitude, it.longitude), title, desc)
+                        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f)
+                        fragment.updateCamera(cameraUpdate)
                     }
                     true
                 }
