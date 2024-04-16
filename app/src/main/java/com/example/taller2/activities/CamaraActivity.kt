@@ -19,10 +19,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.taller2.databinding.ActivityCamaraBinding
 import com.example.taller2.utils.Alerts
-
+import com.example.taller2.BuildConfig
 import java.io.File
 import java.text.DateFormat.getDateInstance
 import java.util.Date
+import java.util.Objects
 
 class CamaraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCamaraBinding
@@ -140,7 +141,8 @@ class CamaraActivity : AppCompatActivity() {
                     getDateInstance().format(Date())
                 }.mp4"
             )
-            outputPath = FileProvider.getUriForFile(this, "com.example.android.fileprovider", file)
+            outputPath = FileProvider.getUriForFile( Objects.requireNonNull(applicationContext),
+                BuildConfig.APPLICATION_ID + ".contentprovider", file)
             takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputPath)
             takeVideoIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE)
@@ -157,8 +159,8 @@ class CamaraActivity : AppCompatActivity() {
         val imageFile =
             File(getExternalFilesDir(Environment.DIRECTORY_PICTURES).toString() + "/" + imageFileName)
         outputPath = FileProvider.getUriForFile(
-            this,
-            "com.example.android.fileprovider",
+            Objects.requireNonNull(applicationContext),
+             BuildConfig.APPLICATION_ID + ".contentprovider",
             imageFile
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputPath)

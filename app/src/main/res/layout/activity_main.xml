@@ -6,30 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <Button
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cameraActivityButton"
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="@string/camara_button_name"
-        app:icon="@drawable/baseline_camera_alt_24"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="400dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3"/>
+        app:cardBackgroundColor="@color/blue_card"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/cameraIcon"
+                android:layout_weight="70"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_camera_alt_24"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/cameraText"
+                android:layout_weight="30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/camara_button_name"
+                android:textColor="@android:color/white"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
-    <Button
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/paisesActivityButton"
-        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="@string/paises_button_name"
-        app:icon="@drawable/baseline_map_24"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="150dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/green_card"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cameraActivityButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/cameraActivityButton"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/botonMapIcon"
+                android:layout_weight="70"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_map_24"
+                app:tint="@android:color/white"/>
+
+            <TextView
+                android:id="@+id/botonMapText"
+                android:layout_weight="30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/paises_button_name"
+                android:textColor="@android:color/white"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
