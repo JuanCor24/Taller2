@@ -16,8 +16,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.taller2.R
+import com.example.taller2.adapters.CustomInfoWindowAdapter
+import com.example.taller2.utils.GeocoderSearch
+import com.google.android.gms.maps.CameraUpdate
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -40,6 +45,8 @@ class MapsFragment : Fragment(), SensorEventListener{
     var zoomLevel = 15.0f
     private val rutaCoordinates = mutableListOf<LatLng>()
     var moveCamera = true
+    private lateinit var sensorManager: SensorManager
+    private lateinit var lightSensor: Sensor
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -65,9 +72,32 @@ class MapsFragment : Fragment(), SensorEventListener{
         )!!
         gMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
-        gMap.setOnMapLongClickListener { latLng -> addPoint(latLng) }
+
+        gMap.setOnMapLongClickListener {  latLng ->
+
+            val geocoderSearch = GeocoderSearch(requireContext())
+
+            val latitude = latLng.latitude
+            val longitude = latLng.longitude
 
 
+            val markerTitle = "Título del marcador en ($latitude, $longitude)"
+
+            // Obtiene la dirección del marcador utilizando la función findAddressByPosition
+            val address = geocoderSearch.findAddressByPosition(latLng)?.getAddressLine(0) ?: "Dirección desconocida"
+
+
+            val context = requireContext() // Si estás en un fragmento
+
+
+            addStore(context, latLng, markerTitle, address)
+        }
+
+
+    }
+
+    fun updateCamera(cameraUpdate: CameraUpdate) {
+        gMap.animateCamera(cameraUpdate)
     }
 
     override fun onCreateView(
@@ -82,6 +112,9 @@ class MapsFragment : Fragment(), SensorEventListener{
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        sensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)!!
     }
 
     //From https://stackoverflow.com/questions/42365658/custom-marker-in-google-maps-in-android-with-vector-asset-icon
@@ -94,7 +127,6 @@ class MapsFragment : Fragment(), SensorEventListener{
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
-
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (this::gMap.isInitialized) {
@@ -114,11 +146,16 @@ class MapsFragment : Fragment(), SensorEventListener{
         )
     }
 
-    fun addStore(location: LatLng, title: String, desc: String) {
-        gMap.addMarker(
-            MarkerOptions().position(location).title(title).snippet(desc).icon(
-                context?.let { bitmapDescriptorFromVector(it, R.drawable.baseline_add_business_24) })
-        )
+    fun addStore(context: Context, location: LatLng, title: String, address: String) {
+
+        val infoWindowAdapter = CustomInfoWindowAdapter(context)
+        gMap.setInfoWindowAdapter(infoWindowAdapter)
+
+        val markerOptions = MarkerOptions()
+            .position(location)
+            .title(title)
+            .snippet(address) // Set the address as the snippet
+        gMap.addMarker(markerOptions)
     }
 
     fun moveDog(location: Location) {
@@ -155,11 +192,15 @@ class MapsFragment : Fragment(), SensorEventListener{
 
     override fun onResume() {
         super.onResume()
+        sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
     }
 
     override fun onPause() {
         super.onPause()
+        sensorManager.unregisterListener(this)
 
     }
+
+
 }
