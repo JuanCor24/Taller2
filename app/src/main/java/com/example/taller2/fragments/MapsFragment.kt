@@ -106,6 +106,13 @@ class MapsFragment : Fragment(), SensorEventListener{
         )
     }
 
+    fun addStore(location: LatLng, title: String, desc: String) {
+        gMap.addMarker(
+            MarkerOptions().position(location).title(title).snippet(desc).icon(
+                context?.let { bitmapDescriptorFromVector(it, R.drawable.baseline_add_business_24) })
+        )
+    }
+
     fun moveDog(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
         dogMarker.position = latLng
@@ -118,15 +125,6 @@ class MapsFragment : Fragment(), SensorEventListener{
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         //Do nothing
     }
-
-
-
-
-
-
-
-
-
 
     override fun onResume() {
         super.onResume()
